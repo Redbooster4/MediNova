@@ -39,6 +39,30 @@ sideBar=ttk.Frame(master=main_area, bootstyle="secondary", width=180)
 sideBar.pack(side=LEFT, fill=Y)
 sideBar.pack_propagate(False)
 
+nav_button = {"Sales":open_sales, "Inventory":open_inventory, "Purchases":open_purchase, "Ledger":open_ledger, "Report":open_report}
+for btn_txt,cmd in nav_button:
+    btn=ttk.Button(master=sideBar, text=btn_txt, bootstyle="outline-light", width=25, command=cmd)
+    btn.pack(pady=8, padx=10)
+
+def clear():
+    for widget in content_frame.winfo_children():
+        widget.destroy()
+
+def open_sales():
+    clear()
+
+def open_inventory():
+    clear()
+
+def open_purchase():
+    clear()
+
+def open_ledger():
+    clear()
+
+def open_report():
+    clear()
+
 lbl = ttk.Label(
     master=main_area,
     text="DashBoard",
@@ -46,9 +70,7 @@ lbl = ttk.Label(
     bootstyle="inverse-secondary"
 ).pack(pady=20, padx=10)
 
-nav_button = ["Sales", "Inventory", "Purchases", "Ledger", "Report"]
-for btn_txt in nav_button:
-    btn=ttk.Button(master=sideBar, text=btn_txt, bootstyle="outline-light", width=25)
-    btn.pack(pady=8, padx=10)
+content_frame = ttk.Frame(master=main_area)
+content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
 window.mainloop()
