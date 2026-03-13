@@ -3,6 +3,7 @@ import sys
 import tkinter as tk
 # from tkinter import ttk
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from scanner import launch_scanner
 
 def open_scanner():
@@ -18,10 +19,36 @@ window.title("Home Page")
 window.geometry("1000x500")
 window.resizable(False,False)
 
-headtxt = ttk.Label(master=window, text="MediNova: Pharmacy Management", font="Calibri 25 bold")
-headtxt.pack(pady=(50,10))
+# Style for the Frame
+# style = ttk.Style()
+# style.configure(background="white")
+# style.configure("SideBar.TFrame", background="lightblue")
 
-btn = ttk.Button(master=window, text="Scan Your Medicine", width=20, command=open_scanner)
-btn.pack(pady="5")
+frame = ttk.Frame(master=window, padding=20, bootstyle="darkly")
+frame.pack(side=TOP, fill=X, pady=0)
+
+headtxt = ttk.Label(master=frame, text="MediNova: Pharmacy Management", font="Calibri 30 bold")
+headtxt.pack(pady=18,padx=30)
+btn = ttk.Button(master=frame, text="Scan Your Medicine", width=20, command=open_scanner)
+btn.pack(anchor=E)
+
+main_area = ttk.Frame(master=window)
+main_area.pack(side=TOP, fill=BOTH, expand=True)
+
+sideBar=ttk.Frame(master=main_area, bootstyle="secondary", width=180)
+sideBar.pack(side=LEFT, fill=Y)
+sideBar.pack_propagate(False)
+
+lbl = ttk.Label(
+    master=main_area,
+    text="DashBoard",
+    font=("Helvetica", 13, "bold"),
+    bootstyle="inverse-secondary"
+).pack(pady=20, padx=10)
+
+nav_button = ["Sales", "Inventory", "Purchases", "Ledger", "Report"]
+for btn_txt in nav_button:
+    btn=ttk.Button(master=sideBar, text=btn_txt, bootstyle="outline-light", width=25)
+    btn.pack(pady=8, padx=10)
 
 window.mainloop()
