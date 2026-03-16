@@ -44,6 +44,7 @@ sideBar.pack_propagate(False)
 content_frame = ttk.Frame(master=main_area)
 content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
+#Need to make this GLOBAL
 def clear():
     for widget in content_frame.winfo_children():
         widget.destroy()
@@ -57,26 +58,9 @@ def widget(parent, text, val):
     number=tk.Label(master=card, text=str(val), background="#2a2a3d", foreground="#ffffff", font="Calibri 20 bold")
     number.pack()
 
-#dummy data
 
 
-def open_inventory():
-    clear()
-    print("Entered inventory")
-    sales_frame=ttk.Frame(master=content_frame, style="Content.TFrame")
-    sales_frame.pack(pady=10, fill=BOTH,expand=True)
-    
-    head=ttk.Label(master=sales_frame, text="INVENTORY PANEL", font="Calibri 25 bold", background="#12121e")
-    head.pack(pady=30, padx=10)
 
-def open_purchase():
-    clear()
-    print("Entered purchase")
-    sales_frame=ttk.Frame(master=content_frame, style="Content.TFrame")
-    sales_frame.pack(pady=10, fill=BOTH,expand=True)
-    
-    head=ttk.Label(master=sales_frame, text="PURCHASE PANEL", font="Calibri 25 bold", background="#12121e")
-    head.pack(pady=30, padx=10)
 
 nav_button = {
         "Sales": lambda: open_sales(content_frame, clear, widget), 
