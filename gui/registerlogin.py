@@ -2,10 +2,9 @@ import tkinter as tk
 # from tkinter import ttk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
+from db import login, register
 import subprocess
 import sys
-import db
-db.create_table()
 
 def launch_home():
     window.destroy()
@@ -15,47 +14,43 @@ def handle_login():
     uname = uname_login.get().strip()
     passw = pass_login.get().strip()
     if not uname or not passw:
-        Messagebox.show_error("Please fill in all fields.", title="Error")
+        Messagebox.show_error("Please fill in all fields", title="Error")
         return
-    if db.login(uname, passw):
+    if login(uname, passw):
         window.destroy()
         subprocess.Popen([sys.executable, "home.py"])
-    else:
-        Messagebox.show_error("Invalid credentials!", title="Login Failed")
 
 def on_click(event):
-    window = ttk.Window(themename="darkly")
-    window.grab_set()#inorder to direct all the user events to this modal window
-    window.title("Register Page")
-    window.geometry("1000x500")
-    headtxt = ttk.Label(master=window, text="Register Now", font="Calibri 25 bold")
+    r_window = tk.Toplevel(window)
+    r_window.title("Register Page")
+    r_window.geometry("1000x500")
+    headtxt = ttk.Label(master=r_window, text="Register Now", font="Calibri 25 bold")
     headtxt.pack()
     uname_register = tk.StringVar()
     pass_register = tk.StringVar()
 
-    frame = ttk.Frame(master=window)
-    email = ttk.Entry(master=window, textvariable=uname_register, width=40)
+    frame = ttk.Frame(master=r_window)
+    email = ttk.Entry(master=r_window, textvariable=uname_register, width=40)
     email.pack(pady=(80,0))
-    passw = ttk.Entry(master=window, textvariable=pass_register, width=40, show="*")
+    passw = ttk.Entry(master=r_window, textvariable=pass_register, width=40, show="*")
     passw.pack(pady=7)
-    back= ttk.Label(master=window, text="Already Registered ??", cursor="hand2")
+    back= ttk.Label(master=r_window, text="Already Registered ??", cursor="hand2")
     back.pack()
-    #Anonymous func to destroy the window
-    back.bind("<Button-1>", lambda e:window.destroy())
+    #Anonymous func to destroy the r_window
+    back.bind("<Button-1>", lambda e:r_window.destroy())
 
     def handle_register():
-        uname = uname_register.get().strip()
-        passw = pass_register.get().strip()
-        if not uname or not passw:
-            Messagebox.show_error("Please fill in all fields.", title="Error")
+        register_uname = uname_register.get().strip()
+        register_passw = pass_register.get().strip()
+        if not register_uname or not register_passw:
+            Messagebox.show_error("Please fill in all fields", title="Error")
             return
-        if db.register(uname, passw):
-            window.destroy()
-            Messagebox.show_info("Registered SuccessFully !", title="Success")
+        if register(register_uname, register_passw):
+            r_window.destroy()
         else:
-            Messagebox.show_error("Invalid credentials!", title="Login Failed")
+            Messagebox.show_error("Invalid credentials!", title="Registration Failed")
     
-    btn = ttk.Button(master=window, text="Register", width=20, command=handle_register)
+    btn = ttk.Button(master=r_window, text="Register", width=20, command=handle_register)
     btn.pack(pady="5")
     frame.pack()
     

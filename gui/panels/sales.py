@@ -1,37 +1,6 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-import mysql.connector
-
-try:
-  con = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="",
-  database="MediNova"
-  )
-  print("Connection Established Successfully")
-  #creating the cursor object  
-  cur = con.cursor()  
-  print(cur)
-  #id,name,sem,city
-  sql="select * from medicine"
-  cur.execute(sql)
-  result = cur.fetchall()
-  print("ID    GTIN     Name    Dosage_form  Strength   Manufacturer    Prescription Required   CreatedAt")
-  sales_data = []
-  for row in result:
-    for i in range(0,8):
-    #print(row)
-    sales_data.append(row[i])
-    print("%d    %d    %s   %s   %s   %s   %d   %s"%(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]))  
-except:
-  print("Connection Error")
-finally:
-  if con:
-    con.close()
-    print("Resources Released")
-
 
 sales_data = [
     {"id": "001", "medicine": "Paracetamol", "qty": 10, "amount": 500, "date": "2025-03-10"},

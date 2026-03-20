@@ -1,17 +1,36 @@
 import sqlite3
 import bcrypt
+import mysql.connector
+import ttkbootstrap as ttk
+from ttkbootstrap.dialogs import Messagebox
+
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="password",
+        port="3307",
+        database="MediNova"
+    )
 
 def create_table():
-    conn = sqlite3.connect('login.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password_hash TEXT NOT NULL
-        )''')
-    conn.commit()
-    conn.close()
+    conn = None
+    try: 
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """CREATE TABLE IF NOT EXITS login(
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL,
+            password_hash VARCHAR(255) NOT NULL
+        )"""
+        cur.execute(sql)
+        conn.commit()
+    except:
+        if mysql.connector.Error:
+            print("Error")
+    finally:
+        if conn: 
+            conn.close()
 
 def hash(password):
     salt = bcrypt.gensalt()
@@ -22,36 +41,50 @@ def check(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def register(username, password):
-    conn = sqlite3.connect("login.db")
-    cursor = conn.cursor()
+    conn = None
     try:
-        hashed_pw = hash(password)
-        cursor.execute('''INSERT INTO users(username,password_hash) VALUES (?, ?)''',(username, hashed_pw))
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """
+            INSERT INTO login(username, password) VALUES(%s, %s)
+        """
+        cur.execute(sql, (username, hash(password)))
         conn.commit()
-    except sqlite3.IntegrityError:
-        print("Error!!")
+        Messagebox.show_info("Registration Sucess", title="SUCCESS")
+        return True
+    except mysql.connector.Error as e:
+            print(f"Error: {e}")
+            return False
     finally:
-        conn.close()
+        if conn: 
+            conn.close()
 
 def login(username, password):
-    conn = sqlite3.connect("login.db")
-    cursor = conn.cursor()
-    cursor.execute('SELECT password_hash FROM users WHERE username = ?',(username,))
-    record = cursor.fetchone()
-    conn.close()
-    if record:
-        hashed_pw=record[0]
-        if check(password, hashed_pw):
-            print(f"User '{username}' logged in successfully.")
-            return True
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """
+            SELECT password FROM login WHERE username = %s
+        """
+        cur.execute(sql, (username, ))
+        record = cur.fetchone()
+        if record:
+            hashed_pw=record[0]
+            if check(password, hashed_pw):
+                Messagebox.show_info("Logged In Success", title="Logged In")
+                return True
+            else:
+                print("Incorrect password.")
         else:
-            print("Incorrect password.")
-    else:
-        print(f"Error: User '{username}' not found.")
-    return False
+            Messagebox.show_error("Kindly Register First", title="User Not Found")
+            return False
+    except mysql.connector.Error as e:
+            print(f"Error:{e}")
+    finally:
+        if conn: 
+            conn.close()
+
+
 if __name__ == '__main__':
     create_table()
-    register("testuser", "securepassword123")
-
-    login("testuser", "securepassword123")
-    login("testuser", "wrongpassword")
