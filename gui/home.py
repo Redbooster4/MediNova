@@ -6,6 +6,8 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from scanner import launch_scanner
 from panels.sales import *
+from panels.purchase import *
+from panels.inventory import *
 
 def open_scanner():
     launch_scanner(master=window, on_result=on_scan_result)
@@ -58,14 +60,10 @@ def widget(parent, text, val):
     number=tk.Label(master=card, text=str(val), background="#2a2a3d", foreground="#ffffff", font="Calibri 20 bold")
     number.pack()
 
-
-
-
-
 nav_button = {
         "Sales": lambda: open_sales(content_frame, clear, widget), 
-        "Inventory":open_inventory, 
-        "Purchases":open_purchase
+        "Inventory": lambda: open_inventory(content_frame, clear, widget), 
+        "Purchases": lambda: open_purchase(content_frame, clear, widget)
         }
 for btn_info in nav_button.items():
     btn=ttk.Button(master=sideBar, text=btn_info[0], bootstyle="outline-light", width=25, command=btn_info[1])
