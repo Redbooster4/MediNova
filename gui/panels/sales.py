@@ -3,7 +3,6 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import mysql.connector
 
-
 try:
   con = mysql.connector.connect(
   host="localhost",
