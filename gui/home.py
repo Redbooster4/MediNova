@@ -10,12 +10,7 @@ from panels.purchase import *
 from panels.inventory import *
 
 def open_scanner():
-    launch_scanner(master=window, on_result=on_scan_result)
-
-def on_scan_result(result):
-    lbl_med_name.configure(text=result["med"]["name"])
-    lbl_expiry.configure(text=result["med"]["expiry"])
-    btn_scan.configure(state="normal")
+    launch_scanner(master=window)
 
 window = ttk.Window(themename="darkly")
 window.title("Home Page")

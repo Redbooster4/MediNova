@@ -16,17 +16,15 @@ def get_connection():
 def create_table():
     conn = None
     try: 
-        conn = get_connection()
-        cur = conn.cursor()
-        sql = """CREATE TABLE IF NOT EXITS login(
+        conn=get_connection()
+        cur=conn.cursor()
+        sql="""CREATE TABLE IF NOT EXITS login(
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(255) UNIQUE NOT NULL,
-            password_hash VARCHAR(255) NOT NULL
-        )"""
+            password_hash VARCHAR(255) NOT NULL)"""
         cur.execute(sql)
         conn.commit()
-    except:
-        if mysql.connector.Error:
+    except mysql.connector.Error:
             print("Error")
     finally:
         if conn: 
@@ -45,9 +43,7 @@ def register(username, password):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        sql = """
-            INSERT INTO login(username, password) VALUES(%s, %s)
-        """
+        sql = "INSERT INTO login(username, password) VALUES(%s, %s)"
         cur.execute(sql, (username, hash(password)))
         conn.commit()
         Messagebox.show_info("Registration Sucess", title="SUCCESS")
@@ -84,6 +80,18 @@ def login(username, password):
     finally:
         if conn: 
             conn.close()
+
+def add_medicine(med):
+    conn=None
+    try:
+        conn=get_connection()
+        cur=con.cursor()
+        sql="INSERT INTO medicine() VALUES(%s, %s, %s)",(med["barcode"], med["name"], med["expiry"])
+        conn.commit()
+    except mysql.connector.Error:
+        print("errr")
+    finally:
+        if conn: conn.close()
 
 
 if __name__ == '__main__':

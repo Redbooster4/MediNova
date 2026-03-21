@@ -6,18 +6,21 @@ from pyzbar.pyzbar import decode
 import tkinter as tk
 from PIL import Image, ImageTk
 
-camera = cv.VideoCapture(0)
-
-def launch_scanner(master, on_result):
+def launch_scanner(master):
+    camera = cv.VideoCapture(0)
     window = tk.Toplevel(master)
     window.title("Barcode Scanning Window")
-    window.geometry("660x520")
+    window.geometry("660x550")
 
     barcode_present = False
     running = {"active": True}
+
+    webcam=tk.Label(window)
+    webcam.pack(pady=12)
     
-    label=tk.Label(window)
-    label.pack(pady=12)
+    result=tk.Label(window)
+    result.pack()
+
     def update_frame():
         if not running["active"]:
             return
@@ -40,17 +43,19 @@ def launch_scanner(master, on_result):
             
         frame=cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         img= ImageTk.PhotoImage(Image.fromarray(frame))
-        label.config(image=img)
-        label.image = img #prevent garbage
+        webcam.config(image=img)
+        webcam.image = img #prevent garbage
 
         window.after(10, update_frame)
 
         if barcodes:
             data=barcodes[0].data.decode("utf-8")
-            label.configure(text=f"BARCODE DETECTED: {data}")
+            result.configure(text=f"BARCODE DETECTED: {data}")
             print(data)
             running["active"]=False
-            #window.after(600, got_barcode(data))
+            camera.release()
+            # instead call to db function directly !!!
+            window.after(500, on_barcode(data))
             return
 
         # cv.imshow('Scanner', frame)
