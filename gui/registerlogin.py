@@ -19,6 +19,14 @@ def handle_login():
     if login(uname, passw):
         window.destroy()
         subprocess.Popen([sys.executable, "home.py"])
+    
+#validator funcs
+def isUserName(x)->bool:
+    if x.isdigit():
+        Messagebox.show_error("Numbers not allowed", title="Input Error")
+        return False
+    else:
+        return True
 
 def on_click(event):
     r_window = tk.Toplevel(window)
@@ -30,8 +38,8 @@ def on_click(event):
     pass_register = tk.StringVar()
 
     frame = ttk.Frame(master=r_window)
-    email = ttk.Entry(master=r_window, textvariable=uname_register, width=40)
-    email.pack(pady=(80,0))
+    user = ttk.Entry(master=r_window, textvariable=uname_register, width=40)
+    user.pack(pady=(80,0))
     passw = ttk.Entry(master=r_window, textvariable=pass_register, width=40, show="*")
     passw.pack(pady=7)
     back= ttk.Label(master=r_window, text="Already Registered ??", cursor="hand2")
@@ -67,8 +75,10 @@ pass_login = tk.StringVar()
 
 frame = ttk.Frame(master=window)
 
-email = ttk.Entry(master=window, textvariable=uname_login, width=40)
-email.pack(pady=(50,0))
+user_validate=window.register(isUserName)
+
+usern = ttk.Entry(master=window, textvariable=uname_login, width=40, validate="focus", validatecommand=(user_validate, '%P'))
+usern.pack(pady=(50,0))
 passw = ttk.Entry(master=window, textvariable=pass_login, width=40, show="*")
 passw.pack(pady=7)
 register_link= ttk.Label(master=window, text="Not yet registered ??", cursor="hand2")
