@@ -85,14 +85,28 @@ def add_medicine(med):
     conn=None
     try:
         conn=get_connection()
-        cur=con.cursor()
-        sql="INSERT INTO medicine() VALUES(%s, %s, %s)",(med["barcode"], med["name"], med["expiry"])
+        cur=conn.cursor()
+        sql="""INSERT INTO medicine(medicine_name, barcode, category, expiry_date, 
+        manufacturer, mrp, stock_qty) 
+        VALUES(%s, %s, %s, %s, %s, %s, %s)"""
+        cur.execute(sql, (med["medicine_name"], med["barcode"], med["category"], med["expiry_date"], med["manufacturer"], med["mrp"], med["stock_qty"]))
         conn.commit()
-    except mysql.connector.Error:
-        print("errr")
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
     finally:
         if conn: conn.close()
 
-
 if __name__ == '__main__':
     create_table()
+
+# # UNIT TESTING
+# medi = {
+#     "name":"Paracetamol 500mg",
+#     "barcode":"83451008989",
+#     "category":"Tablet",
+#     "expiry_date":"2027-06-30",
+#     "manufacturer":"Sun Pharma",
+#     "mrp":250.10,
+#     "stock_qty":100
+# }
+# add_medicine(medi)

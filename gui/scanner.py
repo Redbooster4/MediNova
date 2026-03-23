@@ -5,6 +5,8 @@ from pyzbar.pyzbar import decode
 #imports for the GUI embedding PART
 import tkinter as tk
 from PIL import Image, ImageTk
+from db import add_medicine
+import json 
 
 def launch_scanner(master):
     camera = cv.VideoCapture(0)
@@ -54,8 +56,9 @@ def launch_scanner(master):
             print(data)
             running["active"]=False
             camera.release()
-            # instead call to db function directly !!!
-            window.after(500, on_barcode(data))
+            print(type(data)) #JSON STRING
+            medicine_dictinary = json.loads(data)
+            window.after(500, add_medicine(medicine_dictinary))# instead call to db function directly !!!
             return
 
         # cv.imshow('Scanner', frame)
