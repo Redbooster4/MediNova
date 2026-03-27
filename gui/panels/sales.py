@@ -1,6 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from dashboard import *
 
 sales_data = [
     {"id": "001", "medicine": "Paracetamol", "qty": 10, "amount": 500, "date": "2025-03-10"},
@@ -10,10 +11,8 @@ sales_data = [
     {"id": "005", "medicine": "Metformin",   "qty": 3,  "amount": 450, "date": "2025-03-14"},
 ]
 
-
-
-def open_sales(parent, clear, widget):
-    clear()
+def open_sales(parent):
+    clear(parent)
     print("Entered sales")
     sales_frame=ttk.Frame(master=parent, style="Content.TFrame")
     sales_frame.pack(pady=10, fill=BOTH,expand=True)

@@ -59,6 +59,7 @@ def launch_scanner(master):
             print(type(data)) #JSON STRING
             medicine_dictinary = json.loads(data)
             window.after(500, add_medicine(medicine_dictinary))# instead call to db function directly !!!
+            on_close()
             return
 
         # cv.imshow('Scanner', frame)
@@ -72,7 +73,7 @@ def launch_scanner(master):
         camera.release()
         window.destroy()
 
-    window.protocol("WM_DELETE_WINDOW", on_close)
+    #window.protocol("WM_DELETE_WINDOW", on_close)
     update_frame()
 
 

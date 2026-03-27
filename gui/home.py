@@ -42,23 +42,11 @@ content_frame = ttk.Frame(master=main_area)
 content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
 #Need to make this GLOBAL
-def clear():
-    for widget in content_frame.winfo_children():
-        widget.destroy()
-
-def widget(parent, text, val):
-    card=tk.Frame(master=parent, background="#2a2a3d", padx=20, pady=15)
-    card.pack(side=LEFT, padx=10)
-    head=tk.Label(master=card, text=text, background="#2a2a3d", foreground="#aaaaaa", font="Calibri 11")
-    head.pack()
-    
-    number=tk.Label(master=card, text=str(val), background="#2a2a3d", foreground="#ffffff", font="Calibri 20 bold")
-    number.pack()
 
 nav_button = {
-        "Sales": lambda: open_sales(content_frame, clear, widget), 
-        "Inventory": lambda: open_inventory(content_frame, clear, widget), 
-        "Purchases": lambda: open_purchase(content_frame, clear, widget)
+        "Sales": lambda: open_sales(content_frame),
+        "Inventory": lambda: open_inventory(content_frame),
+        "Purchases": lambda: open_purchase(content_frame)
         }
 for btn_info in nav_button.items():
     btn=ttk.Button(master=sideBar, text=btn_info[0], bootstyle="outline-light", width=25, command=btn_info[1])

@@ -1,9 +1,10 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from dashboard import *
 
-def open_purchase(parent, clear, widget):
-    clear()
+def open_purchase(parent):
+    clear(parent)
     print("Entered purchase")
     sales_frame=ttk.Frame(master=parent, style="Content.TFrame")
     sales_frame.pack(pady=10, fill=BOTH,expand=True)
