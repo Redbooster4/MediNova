@@ -3,6 +3,7 @@ import bcrypt
 import mysql.connector
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
+from datetime import date, timedelta
 
 def get_connection():
     return mysql.connector.connect(
@@ -93,6 +94,76 @@ def add_medicine(med):
         conn.commit()
     except mysql.connector.Error as e:
         print(f"Error: {e}")
+    finally:
+        if conn: conn.close()
+
+def fetch_sales():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="SELECT id, medicine_id, qty, total, timestamp FROM sales"
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn: conn.close()
+
+def fetch_inventory():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="SELECT * FROM medicine"
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn: conn.close()
+
+def fetch_inventory_statistics():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM medicine")
+        total_sku = cur.fetchone()[0]
+
+        cur.execute("SELECT SUM(stock_qty) FROM medicine")
+        total_revenue=cur.fetchone()[0]
+    
+        cur.execute("SELECT COUNT(*) FROM medicine WHERE stock_qty < 5")
+        total_qty=cur.fetchone()[0]
+
+        expiry_sql="SELECT COUNT(*) FROM medicine WHERE expiry_date BETWEEN %s AND %s"
+        cur.execute(expiry_sql, (date.today(), date.today()+timedelta(days=30)))
+        expiry=cur.fetchone()[0]
+
+        return total_sku, total_revenue, total_qty, expiry
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return 0,0,0,0
+    finally:
+        if conn: conn.close()
+
+def fetch_supplier():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="SELECT*FROM supplier"
+        cur.execute(sql)
+        record=cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
     finally:
         if conn: conn.close()
 
