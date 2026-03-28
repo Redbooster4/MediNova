@@ -21,7 +21,7 @@ def open_inventory(parent):
     for label, value in [("Total SKUS", total_sku), ("Total Units", total_revenue), ("Low Stock Sold", total_qty), ("Expiring Soon", expiry)]:
         widget(cards_frame, label, value)
 
-    charts_frame = ttk.Frame(master=inv_frame, style="Content.TFrame")
+    charts_frame = ttk.Frame(master=inv_frame, style="Content.TFrame")  
     charts_frame.pack(fill=BOTH, expand=True, padx=20, pady=10)
 
     stock_data = {row[1]: row[7] for row in fetch_inventory()}
