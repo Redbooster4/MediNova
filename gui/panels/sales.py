@@ -1,5 +1,5 @@
 from . import * #from __init__.py
-from db import fetch_sales
+from db import *
 from components import *
 
 # dummy plot+problem of zooming when reusing !!
@@ -9,7 +9,7 @@ from components import *
 # ax.bar(["Jan", "Feb", "Mar"], [100, 200, 150])
 # ax.set_title("Monthly Sales")
 
-#Actual plots
+#Simply Actual plots
 # plt.plot(df[4], df[3])
 # plt.xlabel("Time Stamp")
 # plt.ylabel("Total")
@@ -51,8 +51,6 @@ def open_sales(parent):
     # for row in sales_data:
     #     tree.insert("", END, values=(row[0], row[1], row[2], row[3], row[4]))
     #  tree.pack(fill=BOTH, expand=True)
-
-    
     print(sales_data)
         # [(1, 3, 100, 1000.0, datetime.datetime(2026, 3, 28, 1, 16, 37), 'Analgesic')]
         #   0  1   2     3        4                                         5

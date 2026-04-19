@@ -56,7 +56,7 @@ def launch_scanner(master):
             print(data)
             running["active"]=False
             camera.release()
-            print(type(data)) #JSON STRING
+            #print(type(data)) #JSON STRING
             medicine_dictinary = json.loads(data)
             window.after(500, add_medicine(medicine_dictinary))# instead call to db function directly !!!
             on_close()

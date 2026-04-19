@@ -14,7 +14,7 @@ import json
 # List of medicines (you can scale this)
 medicines = [
     {
-        "medicine_id": 2,
+        "supplier_id": 1,
         "medicine_name": "Amoxicillin 250mg",
         "barcode": "8901234567891",
         "category": "Antibiotic",
@@ -24,7 +24,7 @@ medicines = [
         "stock_qty": 150
     },
     {
-        "medicine_id": 3,
+        "supplier_id": 1,
         "medicine_name": "Ibuprofen 400mg",
         "barcode": "8901234567892",
         "category": "Pain Relief",
@@ -34,7 +34,7 @@ medicines = [
         "stock_qty": 300
     },
     {
-        "medicine_id": 4,
+        "supplier_id": 1,
         "medicine_name": "Cetirizine 10mg",
         "barcode": "8901234567893",
         "category": "Antihistamine",
@@ -50,8 +50,6 @@ for med in medicines:
     data = json.dumps(med)
 
     qr = qrcode.make(data)
-
-    filename = f"medicine_{med['medicine_id']}.png"
-    qr.save(filename)
-
-    print(f"Generated {filename}")
+    for i in range(0,3):
+        filename = f"medicine_{i}.png"
+        qr.save(filename)

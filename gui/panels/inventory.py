@@ -22,5 +22,21 @@ def open_inventory(parent):
     charts_frame = ttk.Frame(master=inv_frame, style="Content.TFrame")  
     charts_frame.pack(fill=BOTH, expand=True, padx=20, pady=10)
 
-    stock_data = {row[1]: row[7] for row in fetch_inventory()}
+    # stock_data = {row[1]: row[7] for row in fetch_inventory()}
+    # print(stock_data)
+
+    stock_data = fetch_inventory()
+    print(stock_data)
+    cols=("Medicine Name", "MRP", "Stock Quantity")
+    tree=ttk.Treeview(
+        master=charts_frame,
+        columns=cols,
+        show="headings"
+        )
+    for col in cols:
+        tree.heading(col, text=col)
+        tree.column(col, width=120, anchor=CENTER)
+    for row in stock_data:
+        tree.insert("", END, values=(row[2], row[7], row[8]))
+    tree.pack(side="left", fill="both", expand=True, padx=10, pady=10)
     

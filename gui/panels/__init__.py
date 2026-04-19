@@ -1,5 +1,7 @@
 import tkinter as tk
+from tkinter import *
 import ttkbootstrap as ttk
+from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import matplotlib.pyplot as plt
 from  matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

@@ -29,6 +29,7 @@ def create_table():
             print("Error")
     finally:
         if conn: 
+            cur.close()
             conn.close()
 
 def hash(password):
@@ -54,6 +55,7 @@ def register(username, password):
             return False
     finally:
         if conn: 
+            cur.close()
             conn.close()
 
 def login(username, password):
@@ -78,6 +80,7 @@ def login(username, password):
             print(f"Error:{e}")
     finally:
         if conn: 
+            cur.close()
             conn.close()
 
 def add_medicine(med):
@@ -85,26 +88,27 @@ def add_medicine(med):
     try:
         conn=get_connection()
         cur=conn.cursor()
-        sql="""INSERT INTO medicine(medicine_name, barcode, category, expiry_date, 
+        sql="""INSERT INTO medicine(supplier_id, medicine_name, barcode, category, expiry_date, 
         manufacturer, mrp, stock_qty) 
-        VALUES(%s, %s, %s, %s, %s, %s, %s)"""
-        cur.execute(sql, (med["medicine_name"], med["barcode"], 
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"""
+        cur.execute(sql, (med["supplier_id"], med["medicine_name"], med["barcode"], 
         med["category"], med["expiry_date"], med["manufacturer"], 
         med["mrp"], med["stock_qty"]))
+        
         Messagebox.show_info("Medicine Record Added !!!", title="Success")
         conn.commit()
     except mysql.connector.Error as e:
         print(f"Error: {e}")
-        
         #<class 'str'>
         #Error: 1062 (23000): Duplicate entry '8901234567891' for key 'medicine.barcode_unique'
-
         if(e.errno == 1062):
             Messagebox.show_error("Duplicate QR detected", "Medicine already Scanned")
         else:
             Messagebox.show_error("Invalid QR with wrong credentials", "Wrong QR")
     finally:
-        if conn: conn.close()
+        if conn:
+            cur.close() 
+            conn.close()
 
 def fetch_sales():
     conn = None
@@ -124,7 +128,9 @@ def fetch_sales():
         print(f"Error: {e}")
         return []
     finally:
-        if conn: conn.close()
+        if conn:
+            cur.close() 
+            conn.close()
 
 def fetch_inventory():
     conn = None
@@ -139,7 +145,9 @@ def fetch_inventory():
         print(f"Error: {e}")
         return []
     finally:
-        if conn: conn.close()
+        if conn:
+            cur.close() 
+            conn.close()
 
 def fetch_inventory_statistics():
     conn = None
@@ -164,7 +172,9 @@ def fetch_inventory_statistics():
         print(f"Error: {e}")
         return 0,0,0,0
     finally:
-        if conn: conn.close()
+        if conn:
+            cur.close() 
+            conn.close()
 
 def fetch_supplier():
     conn = None
@@ -179,13 +189,75 @@ def fetch_supplier():
         print(f"Error: {e}")
         return []
     finally:
-        if conn: conn.close()
+        if conn:
+            cur.close() 
+            conn.close()
+
+def add_supplier(id, name, number, email):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = "INSERT INTO supplier(supplier_id, supplier_name, phone_number, email) VALUES(%s, %s, %s, %s)"
+        cur.execute(sql, (id, name, number, email))
+        conn.commit()
+        Messagebox.show_info("New Supplier Added !", title="SUCCESS")
+        return True
+    except mysql.connector.Error as e:
+            print(f"Error: {e}")
+            if(e.errno == 1062):
+                Messagebox.show_error("Duplicates Not Allowed", "Medicine already Scanned")
+            return False
+    finally:
+        if conn: 
+            cur.close()
+            conn.close()
+
+def upd_supplier(sup_id, name, number, email):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """UPDATE supplier
+        SET supplier_name = %s, phone_number = %s, email = %s
+        WHERE supplier_id = %s
+        """
+        cur.execute(sql, (name, number, email, sup_id))
+        conn.commit()
+        Messagebox.show_info("Supplier Updated !", title="SUCCESS")
+        return True
+    except mysql.connector.Error as e:
+            print(f"Error: {e}")
+            return False
+    finally:
+        if conn: 
+            cur.close()
+            conn.close()
+
+def del_supplier(sup_id):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = "DELETE FROM supplier WHERE supplier_id = %s"
+        cur.execute(sql, (sup_id, ))
+        conn.commit()
+        Messagebox.show_info("Supplier Deleted !", title="SUCCESS")
+        return True
+    except mysql.connector.Error as e:
+            print(f"Error: {e}")
+            return False
+    finally:
+        if conn: 
+            cur.close()
+            conn.close()
 
 if __name__ == '__main__':
     create_table()
 
-# # UNIT TESTING
+# Qr data:) 
 # medi = {
+#     "supplier_id": "1", or "101" .......
 #     "name":"Paracetamol 500mg",
 #     "barcode":"83451008989",
 #     "category":"Tablet",
