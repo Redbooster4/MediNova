@@ -1,14 +1,17 @@
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 root = tb.Window(themename="flatly")
 
-# Left Frame
-frame_left = tb.Frame(root, bootstyle="primary", width=200, height=100)
-frame_left.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+fig, ax = plt.subplots()
+ax.bar(["Jan", "Feb", "Mar"], [100, 200, 150])
+ax.set_title("Sales")
 
-# Right Frame
-frame_right = tb.Frame(root, bootstyle="secondary", width=200, height=100)
-frame_right.pack(side=LEFT, padx=10, pady=10, fill=BOTH, expand=YES)
+# Embed into window
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.draw()
+canvas.get_tk_widget().pack(fill="both", expand=YES)
 
 root.mainloop()

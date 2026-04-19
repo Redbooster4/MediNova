@@ -1,5 +1,3 @@
-import subprocess
-import sys
 import tkinter as tk
 # from tkinter import ttk
 import ttkbootstrap as ttk
@@ -23,7 +21,7 @@ style.configure("Side.TFrame", background="#2a2a3d", foreground="#7c83fd")
 style.configure("Content.TFrame", background="#12121e")
 
 frame = ttk.Frame(master=window, padding=20, style="TopBar.TFrame")
-frame.pack(side=TOP, fill=X, pady=0)
+frame.pack(side=TOP, fill=X)
 
 headtxt = ttk.Label(master=frame, text="MediNova: Pharmacy Management", font="Calibri 30 bold",
 background="#1c1c2e", foreground="#e0e0e0")
@@ -41,15 +39,14 @@ sideBar.pack_propagate(False)
 content_frame = ttk.Frame(master=main_area)
 content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
-#Need to make this GLOBAL
 
-nav_button = {
+nav_button = { #dict for btns
         "Sales": lambda: open_sales(content_frame),
         "Inventory": lambda: open_inventory(content_frame),
         "Purchases": lambda: open_purchase(content_frame)
-        }
-for btn_info in nav_button.items():
-    btn=ttk.Button(master=sideBar, text=btn_info[0], bootstyle="outline-light", width=25, command=btn_info[1])
+    }
+for buttons in nav_button.items():
+    btn=ttk.Button(master=sideBar, text=buttons[0], bootstyle="outline-light", width=25, command=buttons[1])
     btn.pack(pady=8, padx=10)
 
 window.mainloop()

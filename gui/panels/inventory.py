@@ -1,7 +1,5 @@
-import tkinter as tk
-import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
-from dashboard import *
+from . import tk, ttk #from __init__.py
+from components import *
 from db import *
 
 def open_inventory(parent):

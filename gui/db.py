@@ -10,8 +10,8 @@ def get_connection():
         host="localhost",
         user="root",
         password="password",
-        port="3307",
-        database="MediNova"
+        port=3307,
+        database="medinova"
     )
 
 def create_table():
@@ -33,8 +33,8 @@ def create_table():
 
 def hash(password):
     salt = bcrypt.gensalt()
-    hashed=bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8') #to store the hashed password as a str
+    hashed=bcrypt.hashpw(password.encode('utf-8'), salt) # encode = toBytes()
+    return hashed.decode('utf-8') #to store the hashed password as a str   decode ulta
 
 def check(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
@@ -61,9 +61,7 @@ def login(username, password):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        sql = """
-            SELECT password FROM login WHERE username = %s
-        """
+        sql = "SELECT password FROM login WHERE username = %s"
         cur.execute(sql, (username, ))
         record = cur.fetchone()
         if record:
@@ -72,7 +70,7 @@ def login(username, password):
                 Messagebox.show_info("Logged In Success", title="Logged In")
                 return True
             else:
-                print("Incorrect password.")
+                Messagebox.show_warning("Wrong username or password", title="Invalid Credentials")
         else:
             Messagebox.show_error("Kindly Register First", title="User Not Found")
             return False
@@ -90,10 +88,21 @@ def add_medicine(med):
         sql="""INSERT INTO medicine(medicine_name, barcode, category, expiry_date, 
         manufacturer, mrp, stock_qty) 
         VALUES(%s, %s, %s, %s, %s, %s, %s)"""
-        cur.execute(sql, (med["medicine_name"], med["barcode"], med["category"], med["expiry_date"], med["manufacturer"], med["mrp"], med["stock_qty"]))
+        cur.execute(sql, (med["medicine_name"], med["barcode"], 
+        med["category"], med["expiry_date"], med["manufacturer"], 
+        med["mrp"], med["stock_qty"]))
+        Messagebox.show_info("Medicine Record Added !!!", title="Success")
         conn.commit()
     except mysql.connector.Error as e:
         print(f"Error: {e}")
+        
+        #<class 'str'>
+        #Error: 1062 (23000): Duplicate entry '8901234567891' for key 'medicine.barcode_unique'
+
+        if(e.errno == 1062):
+            Messagebox.show_error("Duplicate QR detected", "Medicine already Scanned")
+        else:
+            Messagebox.show_error("Invalid QR with wrong credentials", "Wrong QR")
     finally:
         if conn: conn.close()
 
@@ -102,7 +111,12 @@ def fetch_sales():
     try:
         conn=get_connection()
         cur= conn.cursor()
-        sql="SELECT id, medicine_id, qty, total, timestamp FROM sales"
+        sql="""
+        SELECT s.id, s.medicine_id, s.qty, s.total, s.timestamp, m.category
+        FROM sales s
+        JOIN medicine m
+        ON s.medicine_id = m.medicine_id
+        """ #Not getting login_id
         cur.execute(sql)
         record = cur.fetchall()
         return record

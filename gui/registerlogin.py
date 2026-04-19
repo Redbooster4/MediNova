@@ -8,7 +8,7 @@ import sys
 
 def launch_home():
     window.destroy()
-    subprocess.Popen([sys.executable, "home.py"])
+    subprocess.run([sys.executable, "home.py"])
 
 def handle_login():
     uname = uname_login.get().strip()
@@ -18,7 +18,7 @@ def handle_login():
         return
     if login(uname, passw):
         window.destroy()
-        subprocess.Popen([sys.executable, "home.py"])
+        subprocess.run([sys.executable, "home.py"])
     
 #validator funcs
 def isUserName(x)->bool:
@@ -81,6 +81,7 @@ usern = ttk.Entry(master=window, textvariable=uname_login, width=40, validate="f
 usern.pack(pady=(50,0))
 passw = ttk.Entry(master=window, textvariable=pass_login, width=40, show="*")
 passw.pack(pady=7)
+
 register_link= ttk.Label(master=window, text="Not yet registered ??", cursor="hand2")
 register_link.pack()
 register_link.bind("<Button-1>", on_click)

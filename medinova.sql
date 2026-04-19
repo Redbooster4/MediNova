@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Mar 27, 2026 at 09:45 PM
+-- Generation Time: Apr 19, 2026 at 11:40 AM
 -- Server version: 9.4.0
 -- PHP Version: 8.2.12
 
@@ -38,9 +38,6 @@ CREATE TABLE `login` (
 --
 
 INSERT INTO `login` (`id`, `username`, `password`) VALUES
-(1, '', 'neev'),
-(2, '', 'neev1'),
-(3, 'neeb', '$2b$12$ZDik.pzRrolTRNQNEsmm1.xQ6EeWGVmgCX1T909r1uUf2NuV9cF0S'),
 (4, 'neev', '$2b$12$8xVN5rJXU5qnUnkOwgaWdOuP7EzURknaUXft5C1Am5kqtbKuw134a'),
 (5, 'Neev', '$2b$12$L60Wqh61wlZU/LKe1anYXeoDRRfEuyOdfAT3n5jWT9Yp4TraKwqHy');
 
@@ -141,6 +138,13 @@ CREATE TABLE `supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `supplier`
+--
+
+INSERT INTO `supplier` (`supplier_id`, `supplier_name`, `phone_number`, `email`) VALUES
+(1, 'Neev Panchal', '7977424440', 'neev.p4@gmail.com');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -192,7 +196,13 @@ ALTER TABLE `login`
 -- AUTO_INCREMENT for table `medicine`
 --
 ALTER TABLE `medicine`
-  MODIFY `medicine_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `medicine_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `sales`
+--
+ALTER TABLE `sales`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables

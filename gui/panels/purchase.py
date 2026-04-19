@@ -1,7 +1,6 @@
-import tkinter as tk
-import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
-from dashboard import *
+from . import * #from __init__.py
+from components import *
+from db import *
 
 def open_purchase(parent):
     clear(parent)
