@@ -62,7 +62,7 @@ def login(username, password):
     conn = None
     try:
         conn = get_connection()
-        cur = conn.cursor()
+        cur = conn.cursor(buffered=True)
         sql = "SELECT password FROM login WHERE username = %s"
         cur.execute(sql, (username, ))
         record = cur.fetchone()
@@ -121,6 +121,29 @@ def low_qty_providers():
             JOIN medicine m
             ON m.supplier_id = s.supplier_id
             WHERE m.stock_qty < 15
+        """ 
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn:
+            cur.close()
+            conn.close()
+
+def provider_medicine_count():
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """
+            SELECT s.supplier_name, COUNT(m.medicine_id)
+            FROM medicine m
+            JOIN supplier s
+            ON m.supplier_id = s.supplier_id
+            GROUP BY s.supplier_name
         """ 
         cur.execute(sql)
         record = cur.fetchall()

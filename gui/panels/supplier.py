@@ -129,10 +129,10 @@ def open_supplier(parent):
         )
     for col in cols:
         tree.heading(col, text=col)
-        tree.column(col, width=120, anchor=CENTER)
+        tree.column(col, anchor=CENTER)
     for row in supplier_data:
         tree.insert("", END, values=(row[0], row[1], row[2], row[3]))
-    tree.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+    tree.pack(fill = Y, side="left", anchor="nw", padx=10, pady=15)
 
     btns = [
         ("Add Supplier", lambda: new_supplier(parent)),
@@ -140,8 +140,28 @@ def open_supplier(parent):
         ("Delete Supplier", lambda: delete_supplier(parent)), 
     ]
     btn_panel = ttk.Frame(table_frame)
-    btn_panel.pack(side="left", fill="y", padx=10, pady=10)
+    btn_panel.pack(fill="y", padx=10, pady=10)
 
     for label, cmd in btns:
         btn = ttk.Button(btn_panel, text =label, command=cmd)
-        btn.pack(fill=X, pady=5)
+        btn.pack(side="left", fill=X, padx=10, pady=5)
+
+    supplier_data = provider_medicine_count()
+    print(supplier_data)
+    #[('Neev Panchal', 4)]
+
+    df = pd.DataFrame(supplier_data)
+    
+    fig = Figure(figsize=(12, 4))
+    fig.tight_layout()
+    fig.subplots_adjust(bottom=0.2)
+    
+    ax = fig.add_subplot(111) 
+    ax.bar(df[0], df[1])
+    ax.set_title("Provider Distribution")
+    ax.axis("equal")
+    ax.tick_params(axis="x", rotation=30)
+
+    plot1 = FigureCanvasTkAgg(fig, master=table_frame) #Figure to kinter widget
+    plot1.draw()
+    plot1.get_tk_widget().pack(padx=5)
