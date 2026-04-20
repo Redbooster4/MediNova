@@ -122,7 +122,7 @@ def open_supplier(parent):
     table_frame.pack(fill=BOTH, expand=True, padx=20, pady=5)
     
     cols=("ID", "Name", "Contact Number", "Email")
-    tree=ttk.Treeview(
+    tree=ttk.Treeview (
         master=table_frame,
         columns=cols,
         show="headings"

@@ -51,17 +51,18 @@ def open_sales(parent):
     # for row in sales_data:
     #     tree.insert("", END, values=(row[0], row[1], row[2], row[3], row[4]))
     #  tree.pack(fill=BOTH, expand=True)
-    print(sales_data)
+    
+    #print(sales_data)
         # [(1, 3, 100, 1000.0, datetime.datetime(2026, 3, 28, 1, 16, 37), 'Analgesic')]
         #   0  1   2     3        4                                         5
 
     df = pd.DataFrame(sales_data)
-    df = df.sort_values(4)
+    df = df.sort_values(4) #on the basis of ts 
     #    0  1    2        3                   4
     # 0  1  3  100   1000.0 2026-03-28 01:16:37
     # 1  2  3   50  50000.0 2026-03-28 01:22:41
     
-    fig = Figure(figsize=(12, 4), dpi=100)
+    fig = Figure(figsize=(12, 4))
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.23)
     

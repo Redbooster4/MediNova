@@ -110,6 +110,29 @@ def add_medicine(med):
             cur.close() 
             conn.close()
 
+def low_qty_providers():
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = """
+            SELECT m.medicine_name, s.supplier_name, s.phone_number, s.email
+            FROM supplier s
+            JOIN medicine m
+            ON m.supplier_id = s.supplier_id
+            WHERE m.stock_qty < 15
+        """ 
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn:
+            cur.close()
+            conn.close()
+
 def fetch_sales():
     conn = None
     try:
@@ -160,11 +183,11 @@ def fetch_inventory_statistics():
         cur.execute("SELECT SUM(stock_qty) FROM medicine")
         total_revenue=cur.fetchone()[0]
     
-        cur.execute("SELECT COUNT(*) FROM medicine WHERE stock_qty < 5")
+        cur.execute("SELECT COUNT(*) FROM medicine WHERE stock_qty <= 15")
         total_qty=cur.fetchone()[0]
 
         expiry_sql="SELECT COUNT(*) FROM medicine WHERE expiry_date BETWEEN %s AND %s"
-        cur.execute(expiry_sql, (date.today(), date.today()+timedelta(days=30)))
+        cur.execute(expiry_sql, (date.today(), date.today()+timedelta(days=20))) # today,20 days
         expiry=cur.fetchone()[0]
 
         return total_sku, total_revenue, total_qty, expiry
@@ -251,9 +274,6 @@ def del_supplier(sup_id):
         if conn: 
             cur.close()
             conn.close()
-
-if __name__ == '__main__':
-    create_table()
 
 # Qr data:) 
 # medi = {

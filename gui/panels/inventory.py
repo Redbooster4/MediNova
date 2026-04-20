@@ -1,6 +1,8 @@
-from . import tk, ttk #from __init__.py
+from . import * #from __init__.py
 from components import *
 from db import *
+import subprocess
+from panels.automation import send_email
 
 def open_inventory(parent):
     clear(parent)
@@ -16,18 +18,21 @@ def open_inventory(parent):
 
     total_sku, total_revenue, total_qty, expiry = fetch_inventory_statistics()
 
-    for label, value in [("Total SKUS", total_sku), ("Total Units", total_revenue), ("Low Stock Sold", total_qty), ("Expiring Soon", expiry)]:
+    cards = [("Total SKUS", total_sku),
+        ("Total Units", total_revenue),
+        ("Low Stock Sold", total_qty),
+        ("Expiring Soon", expiry)]
+    for label, value in cards:
         widget(cards_frame, label, value)
 
-    charts_frame = ttk.Frame(master=inv_frame, style="Content.TFrame")  
+    charts_frame = ttk.Frame(master=inv_frame)  
     charts_frame.pack(fill=BOTH, expand=True, padx=20, pady=10)
 
-    # stock_data = {row[1]: row[7] for row in fetch_inventory()}
-    # print(stock_data)
-
     stock_data = fetch_inventory()
-    print(stock_data)
-    cols=("Medicine Name", "MRP", "Stock Quantity")
+    #print(stock_data)
+    #(3, 1, 'Paracetamol 500mg', '8901234567890', 'Analgesic', datetime.date(2026, 12, 31), 'Sun Pharma', 45.5, 10)
+
+    cols=("Medicine Name", "MRP", "Stock Quantity", "Expiry Date")
     tree=ttk.Treeview(
         master=charts_frame,
         columns=cols,
@@ -35,8 +40,30 @@ def open_inventory(parent):
         )
     for col in cols:
         tree.heading(col, text=col)
-        tree.column(col, width=120, anchor=CENTER)
+        tree.column(col, anchor=CENTER)
     for row in stock_data:
-        tree.insert("", END, values=(row[2], row[7], row[8]))
-    tree.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+        tree.insert("", END, values=(row[2], row[7], row[8], row[5].strftime("%d/%m/%Y")))
+    tree.pack(side="left", fill = BOTH, expand=True, padx=10, pady=10)
+
+    btn_panel = ttk.Frame(charts_frame)
+    btn_panel.pack(fill="x", anchor="w", padx=10, pady=10)
+    for label, cmd in [("Notify Providers", send_email)]:
+        btn = ttk.Button(btn_panel, text =label, command=cmd)
+        btn.pack(side="left", padx=5)
     
+    df = pd.DataFrame(stock_data)
+    df = df.sort_values(5)
+    # 0  1                  2              3              4           5           6      7    8
+    # 2  11  1    Ibuprofen 400mg  8901234567892    Pain Relief  2026-09-10  Dr Reddy's   60.0  300
+    
+    fig = Figure(figsize=(12, 4))
+    fig.tight_layout()
+    
+    ax = fig.add_subplot(111) 
+    ax.pie(df[8], labels=df[2], autopct="%1.1f%%", startangle=90)
+    ax.set_title("Current Inventory")
+    ax.axis("equal")
+
+    plot1 = FigureCanvasTkAgg(fig, master=charts_frame) #Figure to kinter widget
+    plot1.draw()
+    plot1.get_tk_widget().pack(pady=10)
