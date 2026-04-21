@@ -4,7 +4,9 @@ from db import *
 import subprocess
 from panels.automation import send_email
 
+email_sent = False
 def open_inventory(parent):
+    global email_sent
     clear(parent)
     print("Entered inventory")
     inv_frame=ttk.Frame(master=parent, style="Content.TFrame")
@@ -17,10 +19,16 @@ def open_inventory(parent):
     cards_frame.pack(fill=X, padx=20, pady=10)
 
     total_sku, total_revenue, total_qty, expiry = fetch_inventory_statistics()
+    #print("Total low stock = ", total_qty)
+    #print("exp = ", expiry)
+    if (total_qty>=1 or expiry>=1) and not email_sent:
+        print("Trigger")
+        email_sent = True
+        send_email()
 
     cards = [("Total SKUS", total_sku),
         ("Total Units", total_revenue),
-        ("Low Stock Sold", total_qty),
+        ("Low In Stock", total_qty),
         ("Expiring Soon", expiry)]
     for label, value in cards:
         widget(cards_frame, label, value)

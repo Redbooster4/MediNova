@@ -34,7 +34,7 @@ def open_sales(parent):
     total_revenue = sum(s[3] for s in sales_data)
     total_qty = sum(s[2] for s in sales_data)
 
-    for label, value in [("Total Sales", total_sales), ("Revenue (₹)", total_revenue), ("Units Sold", total_qty)]:
+    for label, value in [("Total Sales", total_sales), ("Revenue", f"₹ {total_revenue}"), ("Units Sold", total_qty)]:
         widget(cards_frame, label, value)
 
     # table_frame = ttk.Frame(master=sales_frame)
@@ -69,7 +69,7 @@ def open_sales(parent):
     ax = fig.add_subplot(121) 
     ax.plot(df[4], df[3], marker="s")
     ax.set_xlabel("Time Stamp")
-    ax.set_ylabel("Total")
+    ax.set_ylabel("Total Cost")
     ax.set_title("Sales Line Chart")
     ax.tick_params(axis='x', rotation=30)
 

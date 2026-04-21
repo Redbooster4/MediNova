@@ -110,19 +110,19 @@ def add_medicine(med):
             cur.close() 
             conn.close()
 
-def low_qty_providers():
+def to_mail_providers():
     conn = None
     try:
         conn = get_connection()
         cur = conn.cursor()
         sql = """
-            SELECT m.medicine_name, s.supplier_name, s.phone_number, s.email
+            SELECT m.medicine_name, m.stock_qty, s.email
             FROM supplier s
             JOIN medicine m
             ON m.supplier_id = s.supplier_id
-            WHERE m.stock_qty < 15
+            WHERE m.stock_qty<15 OR m.expiry_date BETWEEN %s AND %s
         """ 
-        cur.execute(sql)
+        cur.execute(sql,(date.today(), date.today()+timedelta(days=20)))
         record = cur.fetchall()
         return record
     except mysql.connector.Error as e:
@@ -154,6 +154,55 @@ def provider_medicine_count():
     finally:
         if conn:
             cur.close()
+            conn.close()
+
+def fetch_purchases():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="""
+            SELECT s.supplier_name, m.medicine_name, p.qty, p.total, p.data
+            FROM purchases p
+            JOIN supplier s
+            ON p.supplier_id = s.supplier_id
+            JOIN medicine m
+            ON m.medicine_id = p.medicine_id
+        """
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn:
+            cur.close() 
+            conn.close()
+
+def top_supplier():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="""
+            SELECT s.supplier_name, COUNT(p.id) count
+            FROM purchases p
+            JOIN supplier s
+            ON s.supplier_id = p.supplier_id
+            GROUP BY s.supplier_name
+            ORDER BY count DESC
+            LIMIT 1
+        """
+        cur.execute(sql)
+        record=cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn:
+            cur.close() 
             conn.close()
 
 def fetch_sales():
@@ -210,7 +259,7 @@ def fetch_inventory_statistics():
         total_qty=cur.fetchone()[0]
 
         expiry_sql="SELECT COUNT(*) FROM medicine WHERE expiry_date BETWEEN %s AND %s"
-        cur.execute(expiry_sql, (date.today(), date.today()+timedelta(days=20))) # today,20 days
+        cur.execute(expiry_sql,(date.today(), date.today()+timedelta(days=20))) # today,20 days
         expiry=cur.fetchone()[0]
 
         return total_sku, total_revenue, total_qty, expiry

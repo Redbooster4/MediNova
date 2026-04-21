@@ -13,3 +13,5 @@ def open_invoice(parent):
     
     head=ttk.Label(master=sales_frame, text="INVOICE PANEL", font="Calibri 25 bold", background="#12121e")
     head.pack(pady=25, padx=10)
+
+    

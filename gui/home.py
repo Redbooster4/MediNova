@@ -7,6 +7,7 @@ from panels.sales import *
 from panels.purchase import *
 from panels.inventory import *
 from panels.supplier import *
+from panels.invoice import *
 
 def open_scanner():
     launch_scanner(master=window)
@@ -44,9 +45,10 @@ content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
 nav_button = { #dict for btns
         "Sales": lambda: open_sales(content_frame),
-        "Inventory": lambda: open_inventory(content_frame),
         "Purchases": lambda: open_purchase(content_frame),
-        "Suppliers": lambda: open_supplier(content_frame)
+        "Inventory": lambda: open_inventory(content_frame),
+        "Suppliers": lambda: open_supplier(content_frame),
+        "Invoice": lambda:open_invoice(content_frame)
     }
 for buttons in nav_button.items():
     btn=ttk.Button(master=sideBar, text=buttons[0], bootstyle="outline-light", width=25, command=buttons[1])
