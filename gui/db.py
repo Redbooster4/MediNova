@@ -162,7 +162,7 @@ def fetch_purchases():
         conn=get_connection()
         cur= conn.cursor()
         sql="""
-            SELECT s.supplier_name, m.medicine_name, p.qty, p.total, p.data
+            SELECT p.id, s.supplier_name, m.medicine_name, p.qty, p.total, p.date
             FROM purchases p
             JOIN supplier s
             ON p.supplier_id = s.supplier_id
@@ -178,6 +178,39 @@ def fetch_purchases():
     finally:
         if conn:
             cur.close() 
+            conn.close()
+
+def add_purchase(sup_id, med_id, qty, total, date):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = "INSERT INTO purchases(supplier_id, medicine_id, qty, total, date) VALUES(%s, %s, %s, %s, %s)"
+        cur.execute(sql, (sup_id, med_id, qty, total, date))
+        conn.commit()
+        Messagebox.show_info("New Record Added !", title="SUCCESS")
+    except mysql.connector.Error as e:
+        print(f"Err:{e}")
+    finally:
+        if conn:
+            cur.close()
+            conn.close()
+
+def upd_purchase(id, sup_id, med_id, qty, total, date):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql="""UPDATE purchases SET supplier_id = %s, medicine_id = %s, qty=%s, total=%s, date=%s
+        WHERE id = %s"""
+        cur.execute(sql, (sup_id, med_id, qty, total, date, id))
+        conn.commit()
+        Messagebox.show_info("Record Updated !", title="SUCCESS")
+    except mysql.connector.Error as e:
+        print(f"Err:{e}")
+    finally:
+        if conn:
+            cur.close()
             conn.close()
 
 def top_supplier():
@@ -251,17 +284,13 @@ def fetch_inventory_statistics():
         cur= conn.cursor()
         cur.execute("SELECT COUNT(*) FROM medicine")
         total_sku = cur.fetchone()[0]
-
         cur.execute("SELECT SUM(stock_qty) FROM medicine")
         total_revenue=cur.fetchone()[0]
-    
         cur.execute("SELECT COUNT(*) FROM medicine WHERE stock_qty <= 15")
         total_qty=cur.fetchone()[0]
-
         expiry_sql="SELECT COUNT(*) FROM medicine WHERE expiry_date BETWEEN %s AND %s"
         cur.execute(expiry_sql,(date.today(), date.today()+timedelta(days=20))) # today,20 days
         expiry=cur.fetchone()[0]
-
         return total_sku, total_revenue, total_qty, expiry
     except mysql.connector.Error as e:
         print(f"Error: {e}")

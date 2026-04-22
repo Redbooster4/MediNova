@@ -1,7 +1,6 @@
 from . import * #from __init__.py
 from db import *
 from components import *
-import FPDF
 
 def open_invoice(parent):
     clear(parent)
