@@ -186,7 +186,11 @@ def add_purchase(sup_id, med_id, qty, total, date):
         conn = get_connection()
         cur = conn.cursor()
         sql = "INSERT INTO purchases(supplier_id, medicine_id, qty, total, date) VALUES(%s, %s, %s, %s, %s)"
-        cur.execute(sql, (sup_id, med_id, qty, total, date))
+        cur.execute(sql,(sup_id, med_id, qty, total, date))
+        sql1 = """UPDATE medicine
+            SET qty=qty+%s
+            WHERE medicine_id=%s"""
+        cur.execute(sql1,(qty, med_id))
         conn.commit()
         Messagebox.show_info("New Record Added !", title="SUCCESS")
     except mysql.connector.Error as e:
@@ -210,6 +214,24 @@ def upd_purchase(id, sup_id, med_id, qty, total, date):
         print(f"Err:{e}")
     finally:
         if conn:
+            cur.close()
+            conn.close()
+
+def del_purchase(id):
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        sql = "DELETE FROM purchases WHERE id = %s"
+        cur.execute(sql, (id,))
+        conn.commit()
+        Messagebox.show_info("Purchase Deleted !", title="SUCCESS")
+        return True
+    except mysql.connector.Error as e:
+            print(f"Error: {e}")
+            return False
+    finally:
+        if conn: 
             cur.close()
             conn.close()
 
@@ -244,11 +266,11 @@ def fetch_sales():
         conn=get_connection()
         cur= conn.cursor()
         sql="""
-        SELECT s.id, s.medicine_id, s.qty, s.total, s.timestamp, m.category
+        SELECT s.id, m.medicine_name, s.qty, m.mrp, (s.qty*m.mrp) total , m.category, s.timestamp
         FROM sales s
         JOIN medicine m
         ON s.medicine_id = m.medicine_id
-        """ #Not getting login_id
+        """
         cur.execute(sql)
         record = cur.fetchall()
         return record
@@ -374,6 +396,28 @@ def del_supplier(sup_id):
     finally:
         if conn: 
             cur.close()
+            conn.close()
+
+def fetch_invoice():
+    conn = None
+    try:
+        conn=get_connection()
+        cur= conn.cursor()
+        sql="""
+            SELECT m.medicine_name, s.qty, m.mrp, s.total
+            FROM medicine m
+            JOIN sales s
+            ON s.medicine_id = m.medicine_id
+        """
+        cur.execute(sql)
+        record = cur.fetchall()
+        return record
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if conn:
+            cur.close() 
             conn.close()
 
 # Qr data:) 

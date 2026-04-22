@@ -43,15 +43,15 @@ content_frame = ttk.Frame(master=main_area)
 content_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
 
-nav_button = { #dict for btns
-        "Sales": lambda: open_sales(content_frame),
-        "Purchases": lambda: open_purchase(content_frame),
-        "Inventory": lambda: open_inventory(content_frame),
-        "Suppliers": lambda: open_supplier(content_frame),
-        "Invoice": lambda:open_invoice(content_frame)
-    }
-for buttons in nav_button.items():
-    btn=ttk.Button(master=sideBar, text=buttons[0], bootstyle="outline-light", width=25, command=buttons[1])
+nav_button = [ #dict for btns
+        ("Sales", lambda: open_sales(content_frame)),
+        ("Purchases", lambda: open_purchase(content_frame)),
+        ("Inventory", lambda: open_inventory(content_frame)),
+        ("Suppliers", lambda: open_supplier(content_frame)),
+        ("Invoice", lambda:open_invoice(content_frame))
+    ]
+for txt, cmd in nav_button:
+    btn=ttk.Button(master=sideBar, text=txt, bootstyle="outline-light", width=25, command=cmd)
     btn.pack(pady=8, padx=10)
 
 window.mainloop()

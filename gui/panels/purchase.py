@@ -97,6 +97,24 @@ def update_purchase(parent, dict_supplier, dict_medicine):
     submit_btn = ttk.Button(master = root, text="SUBMIT", command=submit)
     submit_btn.grid(row=6, column=1, pady=10)
 
+def delete_purchase(parent):
+    root = tk.Toplevel(parent)
+    root.title("Delete Purchase Form")
+    root.geometry("510x200")
+    now = datetime.now()
+    label0 = Label(root, text="ID", width=20).grid(row=0, column=0)
+    e0 = Entry(root, width=30)
+    e0.grid(row=0, column=1)
+
+    def submit():
+        id = e0.get()
+        if not id or not id.isdigit():
+            Messagebox.show_error("ID not Valid", title = "ERROR")
+            return 
+        del_purchase(id)
+
+    submit_btn = ttk.Button(master = root, text="SUBMIT", command=submit)
+    submit_btn.grid(row=2, column=1, pady=10)
 
 def open_purchase(parent):
     clear(parent)
@@ -137,7 +155,7 @@ def open_purchase(parent):
         )
     for col in cols:
         tree.heading(col, text=col)
-        tree.column(col, anchor=CENTER)
+        tree.column(col, anchor=CENTER, width=150)
     for row in purchase_data:
         tree.insert("", END, values=(row[0], row[1], row[2], row[3], row[4]))
     tree.pack(side="left", fill = BOTH, expand=True, padx=10, pady=10)
@@ -165,16 +183,17 @@ def open_purchase(parent):
     for label, cmd in btns:
         btn = ttk.Button(btn_panel, text=label, command=cmd)
         btn.pack(side="left", padx=5)
-    
+
     df = pd.DataFrame(purchase_data)
-    #print(df)
+    df = df.sort_values(5)
+    print(df)
     #      0  1             2                  3     4       5
     # 0    ID Neev Panchal  Paracetamol 500mg  200   9100.0  2026-01-15
     
     fig = Figure(figsize=(12, 4))
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.25, left=0.15)
-    
+
     ax = fig.add_subplot(111) 
     ax.plot(df[5], df[4], marker="s")
     ax.set_xlabel("Time Stamp")
