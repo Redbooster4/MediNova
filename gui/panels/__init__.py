@@ -1,4 +1,3 @@
-import tkinter as tk
 from tkinter import *
 import ttkbootstrap as ttk
 from tkinter.ttk import *

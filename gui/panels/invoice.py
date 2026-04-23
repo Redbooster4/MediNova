@@ -11,9 +11,16 @@ def open_invoice(parent):
 
     head=ttk.Label(master=invoice_frame, text="MediNova Invoice", font="Calibri 25 bold", background="#12121e")
     head.pack(pady=25, padx=10)
-    tk.Label(invoice_frame, text="Invoice ID: 101").pack(padx=10)
-    tk.Label(invoice_frame, text=f"Date: {datetime.now().strftime('%d-%m-%Y %H:%M')}").pack()
-
+    inv_id = Label(master=invoice_frame, text="Invoice ID: 101")
+    inv_id.pack(padx=10)
+    time_lbl = Label(master=invoice_frame)
+    time_lbl.pack(padx=10)
+    def update_time():
+        now = datetime.now()
+        current_time = now.strftime('%d/%m/%Y %H:%M:%S')
+        time_lbl.config(text=f"Time: {current_time}")
+        time_lbl.after(1000, update_time)
+    update_time()
     invoice_data = fetch_sales()
     #[(1, 'Paracetamol 500mg', 100, 45.5, 4550.0, 'Analgesic', datetime.datetime(2026, 3, 28, 1, 16, 37)), ..]
 
@@ -42,7 +49,6 @@ def open_invoice(parent):
         subtotal_lbl.config(text=f"Subtotal: ₹{subtotal:.2f}")
         gstlbl.config(text=f"GST (5%): ₹{gst:.2f}")
         total_lbl.config(text=f"Total: ₹{total:.2f}")
-
     btn=ttk.Button(master=table_frame, text="Generate Invoice", command=generate_invoice)
     btn.pack(padx=10, pady=10)
     total_frame = ttk.Frame(master=table_frame)

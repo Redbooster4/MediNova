@@ -3,26 +3,22 @@ import cv2 as cv
 import numpy as np
 from pyzbar.pyzbar import decode
 #imports for the GUI embedding PART
-import tkinter as tk
+from tkinter import *
 from PIL import Image, ImageTk
-from db import add_medicine
-import json 
+from db import *
+import json
 
 def launch_scanner(master):
     camera = cv.VideoCapture(0)
-    window = tk.Toplevel(master)
+    window = Toplevel(master)
     window.title("Barcode Scanning Window")
     window.geometry("660x550")
-
-    barcode_present = False
     running = {"active": True}
 
-    webcam=tk.Label(window)
+    webcam=Label(window)#video frames->Label
     webcam.pack(pady=12)
-    
-    result=tk.Label(window)
+    result=Label(window) #barcode txt->Bottom Line
     result.pack()
-
     def update_frame():
         if not running["active"]:
             return
@@ -38,7 +34,6 @@ def launch_scanner(master):
         for code in barcodes:
             points = code.polygon
             if points:
-                barcode_present=True
                 pts = np.array([(p.x, p.y) for p in points], np.int32)
                 pts = pts.reshape((-1,1,2))
                 cv.polylines(frame, [pts], True, (0,255,0), 5)
@@ -47,21 +42,18 @@ def launch_scanner(master):
         img= ImageTk.PhotoImage(Image.fromarray(frame))
         webcam.config(image=img)
         webcam.image = img #prevent garbage
-
         window.after(10, update_frame)
-
         if barcodes:
             data=barcodes[0].data.decode("utf-8")
             result.configure(text=f"BARCODE DETECTED: {data}")
-            print(data)
+            #print(data)
             running["active"]=False
             camera.release()
             #print(type(data)) #JSON STRING
-            medicine_dictinary = json.loads(data)
-            window.after(500, add_medicine(medicine_dictinary))# instead call to db function directly !!!
+            med_dict = json.loads(data)
+            window.after(1000, lambda:add_medicine(med_dict))
             on_close()
             return
-
         # cv.imshow('Scanner', frame)
         # key = cv.waitKey(1)
         # if key == ord('q'):
@@ -75,6 +67,4 @@ def launch_scanner(master):
 
     #window.protocol("WM_DELETE_WINDOW", on_close)
     update_frame()
-
-
 #py -m pip install -r requirement.txt

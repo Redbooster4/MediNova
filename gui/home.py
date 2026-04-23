@@ -1,8 +1,6 @@
-import tkinter as tk
-# from tkinter import ttk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from scanner import launch_scanner
+from scanner import *
 from panels.sales import *
 from panels.purchase import *
 from panels.inventory import *
@@ -13,7 +11,7 @@ def open_scanner():
     launch_scanner(master=window)
 
 window = ttk.Window(themename="darkly")
-window.state("zoomed")
+window.state("zoomed")#fullscreen
 window.title("Home Page")
 window.geometry("1000x500")
 
@@ -41,9 +39,8 @@ sideBar.pack_propagate(False)
 
 content_frame = ttk.Frame(master=main_area)
 content_frame.pack(side=LEFT, fill=BOTH, expand=True)
-
-
-nav_button = [ #dict for btns
+open_sales(content_frame)
+nav_button = [ #dictionary of tupless /for btns
         ("Sales", lambda: open_sales(content_frame)),
         ("Purchases", lambda: open_purchase(content_frame)),
         ("Inventory", lambda: open_inventory(content_frame)),
@@ -53,5 +50,4 @@ nav_button = [ #dict for btns
 for txt, cmd in nav_button:
     btn=ttk.Button(master=sideBar, text=txt, bootstyle="outline-light", width=25, command=cmd)
     btn.pack(pady=8, padx=10)
-
 window.mainloop()

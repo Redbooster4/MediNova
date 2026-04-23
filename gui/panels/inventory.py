@@ -18,17 +18,17 @@ def open_inventory(parent):
     cards_frame = ttk.Frame(master=inv_frame, style="Content.TFrame")
     cards_frame.pack(fill=X, padx=20, pady=10)
 
-    total_sku, total_revenue, total_qty, expiry = fetch_inventory_statistics()
-    #print("Total low stock = ", total_qty)
+    total_sku, total_revenue, low_qty, expiry = fetch_inventory_statistics()
+    #print("Total low stock = ", low_qty)
     #print("exp = ", expiry)
-    if (total_qty>=1 or expiry>=1) and not email_sent:
+    if (low_qty>=1 or expiry>=1) and not email_sent:
         print("Trigger")
         email_sent = True
         send_email()
 
     cards = [("Total SKUS", total_sku),
         ("Total Units", total_revenue),
-        ("Low In Stock", total_qty),
+        ("Low In Stock", low_qty),
         ("Expiring Soon", expiry)]
     for label, value in cards:
         widget(cards_frame, label, value)

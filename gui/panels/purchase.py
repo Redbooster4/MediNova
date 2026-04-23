@@ -4,7 +4,7 @@ from db import *
 from datetime import datetime
 
 def new_purchase(parent, dict_supplier, dict_medicine):
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("New Purchase Form")
     root.geometry("510x250")
     now = datetime.now()
@@ -49,7 +49,7 @@ def new_purchase(parent, dict_supplier, dict_medicine):
     submit_btn.grid(row=5, column=1, pady=10)
 
 def update_purchase(parent, dict_supplier, dict_medicine):
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("Update Purchase Form")
     root.geometry("510x250")
     now = datetime.now()
@@ -98,7 +98,7 @@ def update_purchase(parent, dict_supplier, dict_medicine):
     submit_btn.grid(row=6, column=1, pady=10)
 
 def delete_purchase(parent):
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("Delete Purchase Form")
     root.geometry("510x200")
     now = datetime.now()
@@ -127,7 +127,6 @@ def open_purchase(parent):
     
     purchase_data = fetch_purchases()
     #(1, 'Neev Panchal', 'Paracetamol 500mg', 200, 9100.0, datetime.date(2026, 1, 15))
-
     cards_frame = ttk.Frame(master=purchase_frame, style="Content.TFrame")
     cards_frame.pack(fill=X, padx=20, pady=10)
 

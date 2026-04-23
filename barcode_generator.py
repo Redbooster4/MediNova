@@ -10,8 +10,6 @@
 
 import qrcode
 import json
-
-# List of medicines (you can scale this)
 medicines = [
     {
         "supplier_id": 1,
@@ -117,8 +115,6 @@ medicines = [
 
 for i, med in enumerate(medicines):
     data = json.dumps(med)
-
     qr = qrcode.make(data)
-
     filename = f"medicine_{i}.png"
     qr.save(filename)

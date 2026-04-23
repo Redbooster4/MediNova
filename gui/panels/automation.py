@@ -3,10 +3,9 @@ from . import *
 from db import *
 from email.message import EmailMessage
 
-lowStock = False
 def send_email():
     data = to_mail_providers()
-    print(data)
+    #print(data)
     #[('Paracetamol 500mg', 10, 'neev.p4@gmail.com'),
     # ('Strepcils 500 mg', 10, 'email@gmail.com')]
 
@@ -64,7 +63,7 @@ def send_email():
                             <p>
                                 Dear Sir/Madam,<br>
                                 Your Paracetamol 500mg at Appollo Medical Store present in Kandivali, Mumbai-400067, Maharashtra
-                                has been low of stock(below 15). We would appreciate it if you could arrange a resupply.
+                                has been low of stock(below 10). We would appreciate it if you could arrange a resupply.
 
                                 <br><br>Thank you for your Support,<br><br>
 
