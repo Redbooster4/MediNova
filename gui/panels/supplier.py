@@ -1,11 +1,12 @@
 from . import * #from __init__.py
 from db import *
 from components import *
+from tkinter import *
 from ttkbootstrap.dialogs import Messagebox
 
 def new_supplier(parent):
     print("Inside new Supplier")
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("Add Supplier Form")
     root.geometry("500x200")
     label1 = Label(root, text="ID", width=20).grid(row=0, column=0)
@@ -46,7 +47,7 @@ def new_supplier(parent):
 
 def update_supplier(parent):
     print("Inside update Supplier")
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("Update Supplier Form")
     root.geometry("500x200")
     label1 = Label(root, text="ID", width=20).grid(row=0, column=0)
@@ -88,7 +89,7 @@ def update_supplier(parent):
 
 def delete_supplier(parent):
     print("Inside update Supplier")
-    root = tk.Toplevel(parent)
+    root = Toplevel(parent)
     root.title("Delete Supplier Form")
     root.geometry("500x200")
     label1 = Label(root, text="Enter ID: ", width=20).grid(row=0, column=0)

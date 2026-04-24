@@ -117,17 +117,24 @@ def to_mail_providers():
         cur = conn.cursor()
         sql = """
             SELECT m.medicine_name, m.stock_qty, s.email
-            FROM supplier s
-            JOIN medicine m
-            ON m.supplier_id = s.supplier_id
-            WHERE m.stock_qty<15 OR m.expiry_date BETWEEN %s AND %s
+            FROM medicine m
+            JOIN supplier s ON m.supplier_id = s.supplier_id
+            WHERE m.stock_qty < 15;
         """ 
-        cur.execute(sql,(date.today(), date.today()+timedelta(days=20)))
-        record = cur.fetchall()
-        return record
+        cur.execute(sql)
+        low_qty=cur.fetchall()
+        sql1 = """
+            SELECT m.medicine_name, m.expiry_date, s.email
+            FROM medicine m
+            JOIN supplier s ON m.supplier_id = s.supplier_id
+            WHERE m.expiry_date BETWEEN %s AND %s;
+        """
+        cur.execute(sql1,(date.today(), date.today()+timedelta(days=20)))
+        expiry=cur.fetchall()
+        return low_qty, expiry
     except mysql.connector.Error as e:
         print(f"Error: {e}")
-        return []
+        return [],[]
     finally:
         if conn:
             cur.close()
@@ -180,17 +187,17 @@ def fetch_purchases():
             cur.close() 
             conn.close()
 
-def add_purchase(sup_id, med_id, qty, total, date):
+def add_purchase(sup_id, med_id, quantity, total, date):
     conn = None
     try:
         conn = get_connection()
         cur = conn.cursor()
         sql = "INSERT INTO purchases(supplier_id, medicine_id, qty, total, date) VALUES(%s, %s, %s, %s, %s)"
-        cur.execute(sql,(sup_id, med_id, qty, total, date))
+        cur.execute(sql,(sup_id, med_id, quantity, total, date))
         sql1 = """UPDATE medicine
-            SET qty=qty+%s
+            SET stock_qty=stock_qty+%s
             WHERE medicine_id=%s"""
-        cur.execute(sql1,(qty, med_id))
+        cur.execute(sql1,(quantity, med_id))
         conn.commit()
         Messagebox.show_info("New Record Added !", title="SUCCESS")
     except mysql.connector.Error as e:
