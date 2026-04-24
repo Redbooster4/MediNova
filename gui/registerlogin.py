@@ -1,5 +1,5 @@
 from tkinter import *
-# from ttkbootstraps import *
+#from ttkbootstrap import *
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from db import *
@@ -8,7 +8,7 @@ import sys
 
 def launch_home():
     window.destroy()
-    subprocess.run(["python","home.py"])
+    subprocess.Popen(["python","home.py"])
 
 def handle_login():
     uname = uname_login.get().strip()
@@ -32,16 +32,18 @@ def on_click(event):
     r_window.title("Register Page")
     r_window.geometry("1000x500")
     headtxt = ttk.Label(master=r_window, text="Register Now", font="Calibri 25 bold")
-    headtxt.pack()
-    uname_register = StringVar()
-    pass_register = StringVar()
+    headtxt.pack(pady=10)
+    uname_register=StringVar()
+    pass_register=StringVar()
 
+    ttk.Label(master=r_window, text="Username").pack(pady=(40,0))
     user = ttk.Entry(master=r_window, textvariable=uname_register, width=40)
-    user.pack(pady=(80,0))
+    user.pack()
+    ttk.Label(master=r_window, text="Password").pack(pady=(10,0))
     passw = ttk.Entry(master=r_window, textvariable=pass_register, width=40, show="*")
-    passw.pack(pady=7)
+    passw.pack()
     back= ttk.Label(master=r_window, text="Already Registered ??", cursor="hand2")
-    back.pack()
+    back.pack(pady=30)
     #Anonymous func to destroy the r_window
     back.bind("<Button-1>", lambda e:r_window.destroy())
     def handle_register():
@@ -55,8 +57,8 @@ def on_click(event):
         else:
             Messagebox.show_error("Invalid credentials!", title="Registration Failed")
     
-    btn = ttk.Button(master=r_window, text="Register", width=20, command=handle_register)
-    btn.pack(pady="5")
+    btn = ttk.Button(master=r_window, text="Register", width=20, command=handle_register, bootstyle="success")
+    btn.pack(pady=5)
     
 window = ttk.Window(themename="darkly")
 window.title("Login Page")
@@ -70,16 +72,18 @@ uname_login = StringVar()
 pass_login = StringVar()
 
 user_validate=window.register(isUserName)
-usern = ttk.Entry(master=window, textvariable=uname_login, width=40, validate="focus", validatecommand=(user_validate, '%P'))
-usern.pack(pady=(50,0))
+ttk.Label(master=window, text="Username").pack(pady=(40,0))
+usern = ttk.Entry(master=window, textvariable=uname_login, width=40, validate="key", validatecommand=(user_validate, '%P'))
+usern.pack()
+ttk.Label(master=window, text="Password").pack(pady=(10,0))
 passw = ttk.Entry(master=window, textvariable=pass_login, width=40, show="*")
-passw.pack(pady=7)
+passw.pack()
 
 register_link= ttk.Label(master=window, text="Not yet registered ??", cursor="hand2")
 register_link.pack()
 register_link.bind("<Button-1>", on_click)
 
-btn = ttk.Button(master=window, text="Login", width=20, command=handle_login)
-btn.pack(pady="5")
-
+btn = ttk.Button(master=window, text="Login", width=20, command=handle_login, bootstyle="success")
+btn.pack(pady=30)
+window.bind("<Return>", lambda e: handle_login())
 window.mainloop()

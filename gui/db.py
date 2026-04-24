@@ -112,6 +112,7 @@ def add_medicine(med):
 
 def to_mail_providers():
     conn = None
+    cur=None
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -224,13 +225,17 @@ def upd_purchase(id, sup_id, med_id, qty, total, date):
             cur.close()
             conn.close()
 
-def del_purchase(id):
+def del_purchase(id, medicine_id, qty):
     conn = None
     try:
         conn = get_connection()
         cur = conn.cursor()
         sql = "DELETE FROM purchases WHERE id = %s"
         cur.execute(sql, (id,))
+        sql1="""UPDATE medicine
+                SET stock_qty=stock_qty-%s
+                WHERE medicine_id=%s"""
+        cur.execute(sql1, (qty, medicine_id))
         conn.commit()
         Messagebox.show_info("Purchase Deleted !", title="SUCCESS")
         return True
@@ -310,20 +315,20 @@ def fetch_inventory_statistics():
     conn = None
     try:
         conn=get_connection()
-        cur= conn.cursor()
+        cur= conn.cursor(buffered=True)
         cur.execute("SELECT COUNT(*) FROM medicine")
         total_sku = cur.fetchone()[0]
         cur.execute("SELECT SUM(stock_qty) FROM medicine")
         total_revenue=cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM medicine WHERE stock_qty <= 15")
-        total_qty=cur.fetchone()[0]
-        expiry_sql="SELECT COUNT(*) FROM medicine WHERE expiry_date BETWEEN %s AND %s"
+        cur.execute("SELECT*FROM medicine WHERE stock_qty <= 15")
+        total_qty=cur.fetchall()
+        expiry_sql="SELECT*FROM medicine WHERE expiry_date BETWEEN %s AND %s"
         cur.execute(expiry_sql,(date.today(), date.today()+timedelta(days=20))) # today,20 days
-        expiry=cur.fetchone()[0]
+        expiry=cur.fetchall()
         return total_sku, total_revenue, total_qty, expiry
     except mysql.connector.Error as e:
         print(f"Error: {e}")
-        return 0,0,0,0
+        return 0,0,[],[]
     finally:
         if conn:
             cur.close() 
@@ -427,6 +432,20 @@ def fetch_invoice():
             cur.close() 
             conn.close()
 
+def get_medicine_by_barcode(barcode):
+    try:
+        conn = get_connection()
+        cur = conn.cursor(dictionary=True, buffered=True)
+
+        cur.execute("SELECT*FROM medicine WHERE barcode = %s", (barcode,))
+        result = cur.fetchone()
+        return result
+    except Error as e:
+        print(f"Error: {e}")
+    finally:
+        if conn:
+            cur.close()
+            conn.close()
 # Qr data:) 
 # medi = {
 #     "supplier_id": "1", or "101" .......

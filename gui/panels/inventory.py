@@ -19,16 +19,16 @@ def open_inventory(parent):
     cards_frame.pack(fill=X, padx=20, pady=10)
 
     total_sku, total_revenue, low_qty, expiry = fetch_inventory_statistics()
-    #print("Total low stock = ", low_qty)
-    #print("exp = ", expiry)
-    if (low_qty>=1 or expiry>=1) and not email_sent:
+    print("Total low stock = ", low_qty)
+    print("exp = ", expiry)
+    if (len(low_qty)>=1 or len(expiry)>=1) and not email_sent:
         print("Trigger")
         email_sent = True
         send_email()
     cards = [("Total SKUS", total_sku),
             ("Total Units", total_revenue),
-            ("Low In Stock", low_qty),
-            ("Expiring Soon", expiry)]
+            ("Low In Stock", len(low_qty)),
+            ("Expiring Soon", len(expiry))]
     for label, value in cards:
         widget(cards_frame, label, value)
 
@@ -48,13 +48,37 @@ def open_inventory(parent):
     for col in cols:
         tree.heading(col, text=col)
         tree.column(col, anchor=CENTER)
-    for row in stock_data:
+    for row in low_qty:
         tree.insert("", END, values=(row[2], row[7], row[8], row[5].strftime("%d/%m/%Y")))
     tree.pack(side="left", fill = BOTH, expand=True, padx=10, pady=10)
 
     btn_panel = ttk.Frame(charts_frame)
     btn_panel.pack(fill="x", anchor="w", padx=10, pady=10)
-    for label, cmd in [("Notify Providers", send_email)]:
+    def reorder_med(low_qty):
+        frame = Toplevel(parent)
+        frame.title("Register Page")
+        frame.geometry("400x400")
+        ttk.Label(master=frame, text="These Medicine Need to be Reordered !!").pack(pady=10)
+
+        cols=("Medicine Name","Status")
+        tree=ttk.Treeview (
+            master=frame,
+            columns=cols,
+            show="headings"
+            )
+        for col in cols:
+            tree.heading(col, text=col)
+            tree.column(col, anchor=CENTER)
+        for row in low_qty:
+            status="Low Stock" if row[8]<=10 else "Expiry"
+            tree.insert("", END, values=(row[2], status))
+        tree.pack(fill = Y, side="left", anchor="nw", padx=10, pady=15)
+
+        #Anonymous func to destroy the frame
+        back = ttk.Button(frame, text="Go Back", command=frame.destroy)
+        back.pack(pady=10)
+
+    for label, cmd in [("Notify Providers", send_email), ("Show Reorders", lambda: reorder_med(low_qty))]:
         btn = ttk.Button(btn_panel, text =label, command=cmd)
         btn.pack(side="left", padx=5)
     

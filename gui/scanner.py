@@ -30,7 +30,6 @@ def launch_scanner(master):
             window.after(10, update_frame)
             return
         barcodes = decode(frame)
-
         for code in barcodes:
             points = code.polygon
             if points:
@@ -42,18 +41,24 @@ def launch_scanner(master):
         img= ImageTk.PhotoImage(Image.fromarray(frame))
         webcam.config(image=img)
         webcam.image = img #prevent garbage
-        window.after(10, update_frame)
         if barcodes:
             data=barcodes[0].data.decode("utf-8")
+            barcode=data.strip()
             result.configure(text=f"BARCODE DETECTED: {data}")
             #print(data)
             running["active"]=False
             camera.release()
             #print(type(data)) #JSON STRING
-            med_dict = json.loads(data)
-            window.after(1000, lambda:add_medicine(med_dict))
+            med = get_medicine_by_barcode(barcode)
+            if med:
+                window.after(1000, lambda: add_medicine(med))
+            else:
+                result.configure(text=f"Not found in db {barcode}")
+                window.after(2000, on_close)
+            window.after(15000, on_close)
             return
         window.after(10, update_frame)
+
         # cv.imshow('Scanner', frame)
         # key = cv.waitKey(1)
         # if key == ord('q'):
@@ -65,6 +70,6 @@ def launch_scanner(master):
         camera.release()
         window.destroy()
 
-    #window.protocol("WM_DELETE_WINDOW", on_close)
+    window.protocol("WM_DELETE_WINDOW", on_close)
     update_frame()
 #py -m pip install -r requirement.txt

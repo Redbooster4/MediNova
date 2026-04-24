@@ -7,7 +7,7 @@ def group_by_email(records, key_index):
     for row in records:
         email=row[key_index]
         if email not in grouped:
-            grouped[email] = []
+            grouped[email]=[]
         grouped[email].append(row)
     return grouped
 
@@ -16,22 +16,21 @@ def build_rows(items, is_expiry=False):
     for row in items:
         rows+="<tr>"
         rows+=f"<td>{row[0]}</td>"
+        rows+=f"<td>{row[1]}</td>"
         if is_expiry:
-            rows+=f"<td>{row[1]}</td>"
             rows+="<td>Expiring Soon</td>"
         else:
-            rows+=f"<td>{row[1]}</td>"
             rows+="<td>Low Stock</td>"
         rows += "</tr>"
-    print(rows)
+    #print(rows)
     return rows
 
 def send_email():
+    server=None
     low_qty, expiry=to_mail_providers()
-    #print(low_qty)
+    print(low_qty)
     low_grouped=group_by_email(low_qty, 2)
     exp_grouped=group_by_email(expiry, 2)
-    #print(low_grouped)
     sender="neeewww4@gmail.com"
     branch="Kandivali, Mumbai-400067, Maharashtra"
     try:
@@ -92,7 +91,7 @@ def send_email():
             <html>
             <body>
                 <table>
-                <tr>
+                    <tr>
                         <td style="background:#162c15; padding:20px 32px;">
                             <h1 style="margin:0; color:#ffffff; font-size:20px;">
                                 Apollo Medical Store
@@ -112,7 +111,6 @@ def send_email():
                     </tr>
                 <h2>Expiry Alert - Apollo Medical Store</h2>
                 <p>{branch}</p>
-
                 <table border="1" cellpadding="8">
                     <tr>
                         <th>Medicine</th>
@@ -126,7 +124,9 @@ def send_email():
             </html>
             """, subtype="html")
             server.send_message(msg)
-        server.quit()
         Messagebox.show_info("Email Sent Successfully!", title="SUCCESS")
     except Exception as e:
         print("Email error:", e)
+    finally:
+        if server:
+            server.quit()

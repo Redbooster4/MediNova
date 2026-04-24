@@ -97,24 +97,41 @@ def update_purchase(parent, dict_supplier, dict_medicine):
     submit_btn = ttk.Button(master = root, text="SUBMIT", command=submit)
     submit_btn.grid(row=6, column=1, pady=10)
 
-def delete_purchase(parent):
+def delete_purchase(parent, dict_medicine):
     root = Toplevel(parent)
     root.title("Delete Purchase Form")
     root.geometry("510x200")
     now = datetime.now()
-    label0 = Label(root, text="ID", width=20).grid(row=0, column=0)
+    label0 = Label(root, text="ID", width=20)
+    label0.grid(row=0, column=0)
     e0 = Entry(root, width=30)
     e0.grid(row=0, column=1)
+    label1 = Label(root, text="Medicine Name", width=20)
+    label1.grid(row=1, column=0)
+    e1 = Combobox(root, width=28, values=list(dict_medicine.keys()))
+    e1.grid(row=1, column=1)
 
     def submit():
         id = e0.get()
+        med_name = e1.get()
+        med_id = dict_medicine.get(med_name)
+        med_data = fetch_inventory()
+        qty = None
+        for row in med_data:
+            if row[0] == med_id:
+                qty = row[8]
+                break
+
         if not id or not id.isdigit():
             Messagebox.show_error("ID not Valid", title = "ERROR")
             return 
-        del_purchase(id)
+        if not med_name or med_id is None:
+            Messagebox.show_error("Please select a medicine", title="ERROR")
+            return
+        del_purchase(int(id), med_id, qty)
 
     submit_btn = ttk.Button(master = root, text="SUBMIT", command=submit)
-    submit_btn.grid(row=2, column=1, pady=10)
+    submit_btn.grid(row=3, column=1, pady=10)
 
 def open_purchase(parent):
     clear(parent)
@@ -178,7 +195,7 @@ def open_purchase(parent):
 
     btns=[("Add Purchase", lambda:new_purchase(parent, dict_supplier, dict_medicine)), 
           ("Update Purchase", lambda:update_purchase(parent, dict_supplier, dict_medicine)), 
-          ("Delete Purchase", lambda:delete_purchase(parent)) ]
+          ("Delete Purchase", lambda:delete_purchase(parent, dict_medicine)) ]
     for label, cmd in btns:
         btn = ttk.Button(btn_panel, text=label, command=cmd)
         btn.pack(side="left", padx=5)
