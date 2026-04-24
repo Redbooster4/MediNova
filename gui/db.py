@@ -119,7 +119,7 @@ def to_mail_providers():
             SELECT m.medicine_name, m.stock_qty, s.email
             FROM medicine m
             JOIN supplier s ON m.supplier_id = s.supplier_id
-            WHERE m.stock_qty < 15;
+            WHERE m.stock_qty<15;
         """ 
         cur.execute(sql)
         low_qty=cur.fetchall()

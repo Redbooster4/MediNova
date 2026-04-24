@@ -52,8 +52,8 @@ def launch_scanner(master):
             #print(type(data)) #JSON STRING
             med_dict = json.loads(data)
             window.after(1000, lambda:add_medicine(med_dict))
-            on_close()
             return
+        window.after(10, update_frame)
         # cv.imshow('Scanner', frame)
         # key = cv.waitKey(1)
         # if key == ord('q'):

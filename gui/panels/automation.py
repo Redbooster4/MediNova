@@ -17,19 +17,21 @@ def build_rows(items, is_expiry=False):
         rows+="<tr>"
         rows+=f"<td>{row[0]}</td>"
         if is_expiry:
-            rows += f"<td>{row[1]}</td>"
-            rows += "<td>Expiring Soon</td>"
+            rows+=f"<td>{row[1]}</td>"
+            rows+="<td>Expiring Soon</td>"
         else:
-            rows += f"<td>{row[1]}</td>"
-            rows += "<td>Low Stock</td>"
+            rows+=f"<td>{row[1]}</td>"
+            rows+="<td>Low Stock</td>"
         rows += "</tr>"
     print(rows)
     return rows
 
 def send_email():
     low_qty, expiry=to_mail_providers()
+    #print(low_qty)
     low_grouped=group_by_email(low_qty, 2)
     exp_grouped=group_by_email(expiry, 2)
+    #print(low_grouped)
     sender="neeewww4@gmail.com"
     branch="Kandivali, Mumbai-400067, Maharashtra"
     try:
@@ -119,7 +121,7 @@ def send_email():
                     </tr>
                     {rows}
                 </table>
-                </table
+                </table>
             </body>
             </html>
             """, subtype="html")

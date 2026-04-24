@@ -6,19 +6,3 @@ pillow
 python-barcode
 sqlite3
 bcrypt
-
-
-    #table_frame = ttk.Frame(master=sales_frame)
-    #table_frame.pack(fill=BOTH, expand=True, padx=20, pady=5)
-
- # cols=("ID", "Medicine", "Qty", "Total", "Time Stamp")
-    # tree=ttk.Treeview(
-    #     master=table_frame, 
-    #     columns=cols,
-    #     show="headings")
-    # for col in cols:
-    #     tree.heading(col, text=col)
-    #     tree.column(col, width=120, anchor=CENTER)
-    # for row in sales_data:
-    #     tree.insert("", END, values=(row[0], row[1], row[2], row[3], row[4]))
-    #  tree.pack(fill=BOTH, expand=True)

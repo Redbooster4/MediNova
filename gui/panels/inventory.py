@@ -25,11 +25,10 @@ def open_inventory(parent):
         print("Trigger")
         email_sent = True
         send_email()
-
     cards = [("Total SKUS", total_sku),
-        ("Total Units", total_revenue),
-        ("Low In Stock", low_qty),
-        ("Expiring Soon", expiry)]
+            ("Total Units", total_revenue),
+            ("Low In Stock", low_qty),
+            ("Expiring Soon", expiry)]
     for label, value in cards:
         widget(cards_frame, label, value)
 
