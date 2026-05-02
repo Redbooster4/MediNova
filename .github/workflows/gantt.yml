@@ -8,11 +8,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout your repo
         uses: actions/checkout@v3
 
-      - name: Generate Gantt
-        uses: realm/github-gantt@master
+      - name: Clone github-gantt
+        run: |
+          git clone https://github.com/realm/github-gantt.git
+
+      - name: Install dependencies
+        run: |
+          cd github-gantt
+          npm install
+
+      - name: Run gantt generator
+        run: |
+          cd github-gantt
+          node index.js --owner Redbooster4 --repo MediNova --output gantt.svg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          output: gantt.svg
+          name: gantt-chart
+          path: github-gantt/gantt.svg
